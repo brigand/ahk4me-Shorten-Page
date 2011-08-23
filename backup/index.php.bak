@@ -1,0 +1,30 @@
+<?php
+//header("content-type: plain/text");
+header('Cache-Control: no-cache, must-revalidate');
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Content-type: application/json');
+$formurl = $_POST['url'];
+
+if(preg_match('/^(command|commands|cmd)\W(\S+)$/i', $formurl, $cmd_matches))
+{
+	$str = 'http://d.ahk4.me/~' . $cmd_matches[2];
+	echo $str;
+}
+
+else if(preg_match('/^(docs|documentation|help|about)\W(\S+)$/i', $formurl, $docs_matches))
+{
+	$str = 'http://d.ahk4.me/' . $docs_matches[2];
+	echo $str;
+}
+
+else if (!preg_match('/^(http:\/\/|www\.){1,2}autohotkey\..*$/i', $formurl))
+{
+   echo "Only AutoHotkey URLs are allowed";
+}
+
+else
+{
+	$result = file_get_contents('http://api.bitly.com/v3/shorten?login=ahk4me&apiKey=R_4b3df1f5417d94ff356ed511fd50a153&longUrl=' . urlencode($formurl) . '&format=txt');
+	echo trim($result);
+}
+?>
